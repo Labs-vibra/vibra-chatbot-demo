@@ -41,3 +41,5 @@ Seu chatbot com IA está funcionando perfeitamente! Aqui está um resumo do que 
 
 ### 🎉 Parabéns!
 Seu chatbot está pronto para uso! A interface verde ficou moderna e a integração com o Gemini Pro está funcionando perfeitamente.
+
+.
