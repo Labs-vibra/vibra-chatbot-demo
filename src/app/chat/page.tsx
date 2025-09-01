@@ -3,6 +3,20 @@
 import { useChat } from 'ai/react';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faUser,
+  faGasPump,
+  faPaperPlane,
+  faSpinner,
+  faPlus,
+  faChevronLeft,
+  faChevronRight,
+  faTrash,
+  faSignOutAlt,
+  faRobot,
+  faBolt
+} from '@fortawesome/free-solid-svg-icons';
 
 interface ChatHistory {
   id: string;
@@ -18,6 +32,7 @@ export default function ChatPage() {
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [selectedModel, setSelectedModel] = useState('Vic');
   const router = useRouter();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -230,16 +245,20 @@ export default function ChatPage() {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="p-2 hover:bg-green-100 rounded-lg transition-colors"
             >
-              {sidebarOpen ? '◀' : '▶'}
+              <FontAwesomeIcon
+                icon={sidebarOpen ? faChevronLeft : faChevronRight}
+                className="w-4 h-4 text-green-600"
+              />
             </button>
           </div>
 
           {sidebarOpen && (
             <button
               onClick={createNewChat}
-              className="w-full mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors flex items-center justify-center"
+              className="w-full mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors flex items-center justify-center gap-2"
             >
-              ➕ Nova Conversa
+              <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
+              Nova Conversa
             </button>
           )}
         </div>
@@ -282,7 +301,7 @@ export default function ChatPage() {
                         }}
                         className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 rounded text-red-500 transition-all"
                       >
-                        🗑️
+                        <FontAwesomeIcon icon={faTrash} className="w-3 h-3" />
                       </button>
                     </div>
                   </div>
@@ -296,21 +315,33 @@ export default function ChatPage() {
       {/* Área principal do chat */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-green-600 to-green-700 text-white p-4 shadow-lg">
-          <div className="flex justify-between items-center">
+        <div className="bg-gradient-to-r from-green-600 to-green-700 text-white px-4 shadow-lg flex items-center" style={{ height: '74px' }}>
+          <div className="flex justify-between items-center w-full">
             <div className="flex items-center space-x-3">
-              <div className="h-12 w-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center shadow-md border border-green-300 p-1">
+              <div className="h-14 w-18 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center shadow-md border border-green-300 overflow-auto">
                 <img
-                  src="/vibra-logo.png"
-                  alt="Vibra Energia Logo"
-                  className="h-full w-full object-contain"
+                  src="/vic_image.png"
+                  alt="Vic Logo"
+                  className="h-full w-auto object-contain"
                 />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">ChatBot Vibra Energia</h1>
-                <p className="text-green-100 mt-1">
-                  {currentChatId ? 'Chat Ativo' : 'Sistema de Atendimento Especializado'}
-                </p>
+                <h1 className="text-2xl font-bold">Victória AI</h1>
+                <div className="mt-1 flex items-center space-x-2">
+                  {currentChatId ? (
+                    <p className="text-green-100">Chat Ativo</p>
+                  ) : (
+                    <div className="flex items-center space-x-2">
+                      <select
+                        value={selectedModel}
+                        onChange={(e) => setSelectedModel(e.target.value)}
+                        className="bg-green-800 text-white border border-green-500 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                      >
+                        <option value="Vic" className="text-white">Modelo: N/A</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -320,8 +351,9 @@ export default function ChatPage() {
               </div>
               <button
                 onClick={handleLogout}
-                className="bg-green-700 hover:bg-green-800 px-3 py-1 rounded-lg text-sm transition-colors"
+                className="bg-green-700 hover:bg-green-800 px-3 py-1 rounded-lg text-sm transition-colors flex items-center gap-2"
               >
+                <FontAwesomeIcon icon={faSignOutAlt} className="w-3 h-3" />
                 Sair
               </button>
             </div>
@@ -333,9 +365,11 @@ export default function ChatPage() {
           {messages.length === 0 && (
             <div className="text-center text-green-600 mt-8">
               <div className="bg-white rounded-xl p-6 shadow-lg max-w-md mx-auto border border-green-200">
-                <div className="text-4xl mb-4">⛽</div>
+                <div className="text-4xl mb-4 text-green-600">
+                  <FontAwesomeIcon icon={faRobot} className="w-16 h-16" />
+                </div>
                 <h2 className="text-xl font-semibold mb-2">Olá! Sou o ChatBot Vibra Energia</h2>
-                <p className="text-green-500">Posso ajudar com informações sobre energia e combustíveis. Como posso auxiliá-lo?</p>
+                <p className="text-green-500">Especialista em combustíveis e regulamentações ANP. Como posso auxiliá-lo com informações sobre combustíveis, derivados de petróleo e normas da Agência Nacional do Petróleo?</p>
               </div>
             </div>
           )}
@@ -354,7 +388,10 @@ export default function ChatPage() {
               >
                 <div className="flex items-start space-x-2">
                   <div className="text-lg">
-                    {message.role === 'user' ? '👤' : '⛽'}
+                    <FontAwesomeIcon
+                      icon={message.role === 'user' ? faUser : faGasPump}
+                      className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-green-600'}`}
+                    />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -368,7 +405,9 @@ export default function ChatPage() {
             <div className="flex justify-start">
               <div className="bg-white text-gray-800 border border-green-200 max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-2xl shadow-md">
                 <div className="flex items-center space-x-2">
-                  <div className="text-lg">⛽</div>
+                  <div className="text-lg">
+                    <FontAwesomeIcon icon={faGasPump} className="w-4 h-4 text-green-600" />
+                  </div>
                   <div className="flex space-x-1">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce"></div>
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -396,7 +435,10 @@ export default function ChatPage() {
               disabled={isLoading || !input.trim()}
               className="bg-green-500 hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-6 py-3 rounded-full font-medium transition-colors shadow-lg"
             >
-              {isLoading ? '⏳' : '📤'}
+              <FontAwesomeIcon
+                icon={isLoading ? faSpinner : faPaperPlane}
+                className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
+              />
             </button>
           </form>
         </div>

@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Agente Vibra Energia - Especialista em Energia e Combustíveis",
-  description: "Agente virtual especializado da Vibra Energia SA para informações sobre energia e combustíveis",
+  title: "ChatBot Vibra Energia - Especialista em Combustíveis e ANP",
+  description: "ChatBot virtual especializado da Vibra Energia SA para informações sobre combustíveis, derivados de petróleo e regulamentações da ANP",
 };
 
 export default function RootLayout({

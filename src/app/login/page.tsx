@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -28,7 +30,7 @@ export default function LoginPage() {
       localStorage.setItem('vibra_user', JSON.stringify({
         email: email,
         name: 'Fernando Oliveira',
-        role: 'Agente Especializado'
+        role: 'Engenheiro de dados 42rio'
       }));
       router.push('/chat');
     } else {
@@ -95,7 +97,10 @@ export default function LoginPage() {
 
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="text-sm text-red-600">⚠️ {error}</p>
+                <p className="text-sm text-red-600 flex items-center gap-2">
+                  <FontAwesomeIcon icon={faExclamationTriangle} className="w-4 h-4" />
+                  {error}
+                </p>
               </div>
             )}
 
@@ -106,8 +111,8 @@ export default function LoginPage() {
                 className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               >
                 {isLoading ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <div className="flex items-center gap-2">
+                    <FontAwesomeIcon icon={faSpinner} className="w-4 h-4 animate-spin" />
                     Entrando...
                   </div>
                 ) : (
