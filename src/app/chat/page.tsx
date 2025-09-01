@@ -19,7 +19,7 @@ import {
   faTrash,
   faSignOutAlt,
   faRobot
-} from '@fortawesome/free-solid-svg-icons';
+  } from '@fortawesome/free-solid-svg-icons';
 import type { Message } from 'ai';
 
 interface ChatHistory {
@@ -409,14 +409,15 @@ export default function ChatPage() {
                       icon={message.role === 'user' ? faUser : faGasPump}
                       className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-green-600'}`}
                     />
-                  </div>                  <div className="flex-1">
+                  </div>
+                  <div className="flex-1">
                     {message.role === 'assistant' ? (
-                      <div className="text-sm prose prose-sm max-w-none prose-headings:text-gray-800 prose-p:text-gray-800 prose-a:text-green-600 prose-strong:text-gray-900 prose-code:text-green-700 prose-code:bg-green-50 prose-pre:bg-gray-100 prose-pre:text-gray-800">
+                      <div className="text-sm prose prose-sm max-w-none">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           rehypePlugins={[rehypeHighlight, rehypeRaw]}
                           components={{
-                            code: ({ className, children, ...props }: any) => {
+                            code: ({ className, children, ...props }) => {
                               const match = className && /language-(\w+)/.exec(className);
                               const isInline = !match;
                               return isInline ? (
@@ -431,42 +432,42 @@ export default function ChatPage() {
                                 </pre>
                               );
                             },
-                            p: ({ children }: any) => (
+                            p: ({ children }) => (
                               <p className="mb-2 last:mb-0">{children}</p>
                             ),
-                            ul: ({ children }: any) => (
+                            ul: ({ children }) => (
                               <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>
                             ),
-                            ol: ({ children }: any) => (
+                            ol: ({ children }) => (
                               <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>
                             ),
-                            h1: ({ children }: any) => (
+                            h1: ({ children }) => (
                               <h1 className="text-lg font-bold mb-2">{children}</h1>
                             ),
-                            h2: ({ children }: any) => (
+                            h2: ({ children }) => (
                               <h2 className="text-base font-bold mb-2">{children}</h2>
                             ),
-                            h3: ({ children }: any) => (
+                            h3: ({ children }) => (
                               <h3 className="text-sm font-bold mb-1">{children}</h3>
                             ),
-                            blockquote: ({ children }: any) => (
+                            blockquote: ({ children }) => (
                               <blockquote className="border-l-4 border-green-300 pl-3 italic text-gray-600 my-2">
                                 {children}
                               </blockquote>
                             ),
-                            table: ({ children }: any) => (
+                            table: ({ children }) => (
                               <div className="overflow-x-auto my-2">
                                 <table className="min-w-full border border-gray-300 text-xs">
                                   {children}
                                 </table>
                               </div>
                             ),
-                            th: ({ children }: any) => (
+                            th: ({ children }) => (
                               <th className="border border-gray-300 px-2 py-1 bg-green-50 font-semibold text-left">
                                 {children}
                               </th>
                             ),
-                            td: ({ children }: any) => (
+                            td: ({ children }) => (
                               <td className="border border-gray-300 px-2 py-1">
                                 {children}
                               </td>
