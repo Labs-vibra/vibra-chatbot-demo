@@ -1,9 +1,12 @@
 'use client';
-
 import { useChat } from 'ai/react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import rehypeRaw from 'rehype-raw';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUser,
@@ -406,9 +409,76 @@ export default function ChatPage() {
                       icon={message.role === 'user' ? faUser : faGasPump}
                       className={`w-4 h-4 ${message.role === 'user' ? 'text-white' : 'text-green-600'}`}
                     />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  </div>                  <div className="flex-1">
+                    {message.role === 'assistant' ? (
+                      <div className="text-sm prose prose-sm max-w-none prose-headings:text-gray-800 prose-p:text-gray-800 prose-a:text-green-600 prose-strong:text-gray-900 prose-code:text-green-700 prose-code:bg-green-50 prose-pre:bg-gray-100 prose-pre:text-gray-800">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          rehypePlugins={[rehypeHighlight, rehypeRaw]}
+                          components={{
+                            code: ({ className, children, ...props }: any) => {
+                              const match = /language-(\w+)/.exec(className || '');
+                              const isInline = !match;
+                              return isInline ? (
+                                <code className="bg-green-50 text-green-700 px-1 py-0.5 rounded text-xs font-mono" {...props}>
+                                  {children}
+                                </code>
+                              ) : (
+                                <pre className="bg-gray-100 rounded-lg p-3 overflow-auto">
+                                  <code className={className} {...props}>
+                                    {children}
+                                  </code>
+                                </pre>
+                              );
+                            },
+                            p: ({ children }: any) => (
+                              <p className="mb-2 last:mb-0">{children}</p>
+                            ),
+                            ul: ({ children }: any) => (
+                              <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>
+                            ),
+                            ol: ({ children }: any) => (
+                              <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>
+                            ),
+                            h1: ({ children }: any) => (
+                              <h1 className="text-lg font-bold mb-2">{children}</h1>
+                            ),
+                            h2: ({ children }: any) => (
+                              <h2 className="text-base font-bold mb-2">{children}</h2>
+                            ),
+                            h3: ({ children }: any) => (
+                              <h3 className="text-sm font-bold mb-1">{children}</h3>
+                            ),
+                            blockquote: ({ children }: any) => (
+                              <blockquote className="border-l-4 border-green-300 pl-3 italic text-gray-600 my-2">
+                                {children}
+                              </blockquote>
+                            ),
+                            table: ({ children }: any) => (
+                              <div className="overflow-x-auto my-2">
+                                <table className="min-w-full border border-gray-300 text-xs">
+                                  {children}
+                                </table>
+                              </div>
+                            ),
+                            th: ({ children }: any) => (
+                              <th className="border border-gray-300 px-2 py-1 bg-green-50 font-semibold text-left">
+                                {children}
+                              </th>
+                            ),
+                            td: ({ children }: any) => (
+                              <td className="border border-gray-300 px-2 py-1">
+                                {children}
+                              </td>
+                            ),
+                          }}
+                        >
+                          {message.content}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    )}
                   </div>
                 </div>
               </div>

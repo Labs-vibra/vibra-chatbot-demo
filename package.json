@@ -15,9 +15,14 @@
     "@fortawesome/react-fontawesome": "^3.0.0",
     "@google/generative-ai": "^0.24.1",
     "ai": "^2.2.37",
+    "highlight.js": "^11.11.1",
     "next": "15.5.2",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
