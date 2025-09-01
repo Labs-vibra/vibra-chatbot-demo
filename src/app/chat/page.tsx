@@ -417,7 +417,7 @@ export default function ChatPage() {
                           rehypePlugins={[rehypeHighlight, rehypeRaw]}
                           components={{
                             code: ({ className, children, ...props }: any) => {
-                              const match = /language-(\w+)/.exec(className || '');
+                              const match = className && /language-(\w+)/.exec(className);
                               const isInline = !match;
                               return isInline ? (
                                 <code className="bg-green-50 text-green-700 px-1 py-0.5 rounded text-xs font-mono" {...props}>
