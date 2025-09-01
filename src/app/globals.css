@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  /* Cores customizadas da Vibra Energia */
+  --vibra-green: rgb(0, 68, 21);
+  --vibra-green-light: rgb(0, 85, 26);
+  --vibra-green-dark: rgb(0, 51, 16);
+}
+
+/* Classes customizadas da Vibra */
+.bg-vibra-green {
+  background-color: var(--vibra-green);
+}
+
+.bg-vibra-green-light {
+  background-color: var(--vibra-green-light);
+}
+
+.bg-vibra-green-dark {
+  background-color: var(--vibra-green-dark);
+}
+
+.text-vibra-green {
+  color: var(--vibra-green);
+}
+
+.border-vibra-green {
+  border-color: var(--vibra-green);
+}
+
+.hover\:bg-vibra-green-light:hover {
+  background-color: var(--vibra-green-light);
+}
+
+.focus\:ring-vibra-green:focus {
+  --tw-ring-color: var(--vibra-green);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
