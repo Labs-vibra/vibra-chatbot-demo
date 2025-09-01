@@ -1,4 +1,4 @@
-import { OpenAIStream, StreamingTextResponse } from 'ai';
+import { StreamingTextResponse } from 'ai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Função que retorna o contexto para a IA
@@ -102,7 +102,7 @@ export async function POST(req: Request) {
     const aiContext = getAIContext();
 
     // Processar mensagens e detectar contexto de conversas anteriores
-    let processedMessages = [...messages];
+    const processedMessages = [...messages];
     let conversationHistory = '';
 
     // Verificar se a última mensagem do usuário contém contexto de conversas anteriores
@@ -138,7 +138,7 @@ export async function POST(req: Request) {
     fullConversation += 'CONVERSA ATUAL:\n';
 
     // Adicionar mensagens da conversa atual
-    processedMessages.forEach((message: any) => {
+    processedMessages.forEach((message: { role: string; content: string }) => {
       if (message.role === 'user') {
         fullConversation += `USUÁRIO: ${message.content}\n\n`;
       } else if (message.role === 'assistant') {

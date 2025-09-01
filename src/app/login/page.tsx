@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
@@ -18,7 +19,7 @@ export default function LoginPage() {
     setError('');
 
     // Credenciais válidas
-    const validEmail = 'fernandooliveira@vibra.com.br';
+    const validEmail = 'demo@vibra.com.br';
     const validPassword = '1234';
 
     // Simular delay de autenticação
@@ -29,8 +30,8 @@ export default function LoginPage() {
       localStorage.setItem('vibra_authenticated', 'true');
       localStorage.setItem('vibra_user', JSON.stringify({
         email: email,
-        name: 'Fernando Oliveira',
-        role: 'Engenheiro de dados 42rio'
+        name: 'demo chat bot',
+        role: 'demo'
       }));
       router.push('/chat');
     } else {
@@ -46,9 +47,11 @@ export default function LoginPage() {
         {/* Logo/Header */}
         <div className="text-center">
           <div className="mx-auto h-20 w-20 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center shadow-lg border-2 border-green-300 p-2">
-            <img
+            <Image
               src="/vibra-logo.png"
               alt="Vibra Energia Logo"
+              width={64}
+              height={64}
               className="h-full w-full object-contain"
             />
           </div>

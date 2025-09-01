@@ -1,8 +1,9 @@
 'use client';
 
 import { useChat } from 'ai/react';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUser,
@@ -14,20 +15,26 @@ import {
   faChevronRight,
   faTrash,
   faSignOutAlt,
-  faRobot,
-  faBolt
+  faRobot
 } from '@fortawesome/free-solid-svg-icons';
+import type { Message } from 'ai';
 
 interface ChatHistory {
   id: string;
   title: string;
-  messages: any[];
+  messages: Message[];
   createdAt: string;
   updatedAt: string;
 }
 
+interface User {
+  email: string;
+  name: string;
+  role: string;
+}
+
 export default function ChatPage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
@@ -36,20 +43,13 @@ export default function ChatPage() {
   const router = useRouter();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // useChat hook com configuração personalizada
-  const { messages, input, handleInputChange, handleSubmit, isLoading, setMessages, setInput } = useChat({
-    onFinish: (message) => {
-      saveCurrentChat();
-    },
-  });
-
   // Gerar ID único para chat
   const generateChatId = () => {
     return 'chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   };
 
   // Gerar título do chat baseado na primeira mensagem
-  const generateChatTitle = (messages: any[]) => {
+  const generateChatTitle = (messages: Message[]) => {
     const firstUserMessage = messages.find(m => m.role === 'user');
     if (firstUserMessage) {
       return firstUserMessage.content.slice(0, 50) + (firstUserMessage.content.length > 50 ? '...' : '');
@@ -82,17 +82,30 @@ export default function ChatPage() {
     }
   };
 
-  // Salvar chat atual
-  const saveCurrentChat = () => {
-    if (!currentChatId || messages.length === 0) return;
+  // useChat hook com configuração personalizada
+  const { messages, input, handleInputChange, handleSubmit, isLoading, setMessages, setInput } = useChat({
+    onFinish: () => {
+      // Usar setTimeout para garantir que as mensagens foram atualizadas
+      setTimeout(() => {
+        saveCurrentChat();
+      }, 100);
+    },
+  });
+
+  // Salvar chat atual - usando useCallback para evitar dependência circular
+  const saveCurrentChat = useCallback((currentMessages?: Message[]) => {
+    if (!currentChatId) return;
+
+    const messagesToSave = currentMessages || messages;
+    if (messagesToSave.length === 0) return;
 
     const histories = loadChatHistories();
     const existingIndex = histories.findIndex((h: ChatHistory) => h.id === currentChatId);
 
     const chatData: ChatHistory = {
       id: currentChatId,
-      title: generateChatTitle(messages),
-      messages: messages as any,
+      title: generateChatTitle(messagesToSave),
+      messages: messagesToSave,
       createdAt: existingIndex === -1 ? new Date().toISOString() : histories[existingIndex].createdAt,
       updatedAt: new Date().toISOString()
     };
@@ -104,7 +117,7 @@ export default function ChatPage() {
     }
 
     saveChatHistories(histories);
-  };
+  }, [currentChatId, messages]);
 
   // Criar nova conversa
   const createNewChat = () => {
@@ -128,7 +141,7 @@ export default function ChatPage() {
 
     if (chat) {
       setCurrentChatId(chatId);
-      setMessages(chat.messages as any);
+      setMessages(chat.messages);
     }
   };
 
@@ -160,7 +173,7 @@ export default function ChatPage() {
 
     if (recentHistories.length > 0) {
       const contextSummary = recentHistories.map((history: ChatHistory) => {
-        const summary = history.messages.slice(0, 4).map((m: any) => `${m.role}: ${m.content.slice(0, 100)}`).join('\n');
+        const summary = history.messages.slice(0, 4).map((m: Message) => `${m.role}: ${m.content.slice(0, 100)}`).join('\n');
         return `[Conversa anterior - ${new Date(history.createdAt).toLocaleDateString()}]:\n${summary}`;
       }).join('\n\n');
 
@@ -168,7 +181,6 @@ export default function ChatPage() {
     }
 
     // Temporariamente alterar o input para incluir contexto
-    const originalInput = input;
     setInput(finalInput);
 
     // Chamar handleSubmit original
@@ -203,7 +215,7 @@ export default function ChatPage() {
 
       return () => clearTimeout(timeoutId);
     }
-  }, [messages, currentChatId]);
+  }, [messages, currentChatId, saveCurrentChat]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -319,9 +331,11 @@ export default function ChatPage() {
           <div className="flex justify-between items-center w-full">
             <div className="flex items-center space-x-3">
               <div className="h-14 w-18 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center shadow-md border border-green-300 overflow-auto">
-                <img
+                <Image
                   src="/vic_image.png"
                   alt="Vic Logo"
+                  width={72}
+                  height={56}
                   className="h-full w-auto object-contain"
                 />
               </div>
@@ -374,7 +388,7 @@ export default function ChatPage() {
             </div>
           )}
 
-          {messages.map((message: any) => (
+          {messages.map((message: Message) => (
             <div
               key={message.id}
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
